@@ -1,18 +1,21 @@
 [package]
-name = "Discord-Bot-rs"
+name = "discord-bot-rs"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [workspace]
-members = [".", "entity", "migration"]
+members = [".", "entity", "migration", "glob_proc"]
 
 [dependencies]
+entity = { path = "entity" }
+migration = { path = "migration" }
+glob_proc = { path = "glob_proc" }
 poise = "0.5"
 sea-orm = { version = "0.10", features = [
     "debug-print",
     "macros",
-    "runtime-async-std-native-tls",
+    "runtime-tokio-rustls",
     "sqlx-postgres",
 ] }
 tokio = { version = "1.22.0", features = ["full"] }
@@ -26,3 +29,5 @@ actix-rt = "2.7"
 actix-service = "2"
 regex = "1"
 lazy_static = "1"
+songbird = "0.3.0"
+audiopus_sys = "0.2.2"

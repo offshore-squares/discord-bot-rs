@@ -1,24 +1,14 @@
 use poise::serenity_prelude as serenity;
 use poise::{Framework, FrameworkOptions};
 
+mod command;
+
 #[macro_use]
 extern crate poise;
 
-struct Data {}
-type Error = Box<dyn std::error::Error + Send + Sync>;
-type Context<'a> = poise::Context<'a, Data, Error>;
-
-/// Displays your or another user's account creation date
-#[command(slash_command)]
-async fn age(
-    ctx: Context<'_>,
-    #[description = "Selected user"] user: Option<serenity::User>,
-) -> Result<(), Error> {
-    let u = user.as_ref().unwrap_or_else(|| ctx.author());
-    let response = format!("{}'s account was created at {}", u.name, u.created_at());
-    ctx.say(response).await?;
-    Ok(())
-}
+pub struct Data {}
+pub type Error = Box<dyn std::error::Error + Send + Sync>;
+pub type Context<'a> = poise::Context<'a, Data, Error>;
 
 #[tokio::main]
 async fn main() {
@@ -26,7 +16,7 @@ async fn main() {
 
     let framework = Framework::builder()
         .options(FrameworkOptions {
-            commands: vec![age()],
+            commands: command::exports(),
             ..Default::default()
         })
         .token(std::env::var("DISCORD_KEY").expect("No mo token bitch"))
