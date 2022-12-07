@@ -9,6 +9,8 @@ members = [".", "entity", "migration", "glob_proc"]
 
 [dependencies]
 entity = { path = "entity" }
+log = "0.4"
+log4rs = { version = "1", features = ["gzip"] }
 migration = { path = "migration" }
 glob_proc = { path = "glob_proc" }
 poise = "0.5"

@@ -1,3 +1,5 @@
+use std::env::current_dir;
+
 use glob;
 use proc_macro::TokenStream;
 use quote::quote;
@@ -24,7 +26,7 @@ impl Parse for GlobPattern {
 pub fn glob_use(input: TokenStream) -> TokenStream {
     let GlobPattern { export, r#type } = parse_macro_input!(input as GlobPattern);
 
-    let files = glob::glob("*.rs").unwrap();
+    let files = glob::glob( &(current_dir().unwrap().to_str().unwrap().to_owned() +  "/*.rs")).unwrap();
 
     let mut filenames = vec![];
     for file in files {

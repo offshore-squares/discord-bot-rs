@@ -3,7 +3,7 @@ use poise::serenity_prelude as serenity;
 
 /// Displays your or another user's account creation date
 #[command(slash_command)]
-async fn age(
+pub async fn age(
     ctx: Context<'_>,
     #[description = "Selected user"] user: Option<serenity::User>,
 ) -> Result<(), Error> {
@@ -18,5 +18,5 @@ async fn age(
 }
 
 pub fn exports() -> poise::Command<Data, Error> {
-    return age;
+    return age();
 }
