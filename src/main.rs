@@ -18,11 +18,9 @@ async fn main() {
     let _ = dotenvy::dotenv();
     log4rs::init_file("log4rs.yml", Default::default()).unwrap();
 
-    info!("{:?}", command::exports());
-
     let framework = Framework::builder()
         .options(FrameworkOptions {
-            commands: command::exports(),
+            commands: command::commands(),
             ..Default::default()
         })
         .token(std::env::var("DISCORD_KEY").expect("No mo token bitch"))

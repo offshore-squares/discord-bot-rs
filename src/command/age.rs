@@ -1,4 +1,4 @@
-use crate::{Context, Data, Error};
+use crate::{Context, Error};
 use poise::serenity_prelude as serenity;
 
 /// Displays your or another user's account creation date
@@ -15,8 +15,4 @@ pub async fn age(
     );
     ctx.say(response).await?;
     Ok(())
-}
-
-pub fn exports() -> poise::Command<Data, Error> {
-    return age();
 }

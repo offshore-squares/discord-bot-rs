@@ -1,4 +1,4 @@
-use crate::{Context, Data, Error};
+use crate::{Context, Error};
 
 /// Join's your voice call
 #[command(slash_command)]
@@ -46,6 +46,3 @@ pub async fn join(ctx: Context<'_>) -> Result<(), Error> {
     // }
 }
 
-pub fn exports() -> poise::Command<Data, Error> {
-    return join();
-}

@@ -1,3 +1,12 @@
 use crate::{Data, Error};
+use poise::Command;
 
-glob_proc::glob_use!(exports: poise::Command<Data, Error>);
+mod age;
+mod join;
+
+pub fn commands() -> Vec<Command<Data, Error>> {
+    return vec![
+        age::age(),
+        join::join(),
+    ];
+}

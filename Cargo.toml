@@ -5,14 +5,13 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [workspace]
-members = [".", "entity", "migration", "glob_proc"]
+members = [".", "entity", "migration"]
 
 [dependencies]
 entity = { path = "entity" }
 log = "0.4"
 log4rs = { version = "1", features = ["gzip"] }
 migration = { path = "migration" }
-glob_proc = { path = "glob_proc" }
 poise = "0.5"
 sea-orm = { version = "0.10", features = [
     "debug-print",
