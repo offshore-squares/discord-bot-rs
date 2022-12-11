@@ -17,10 +17,15 @@ pub async fn join(ctx: Context<'_>) -> Result<(), Error> {
             return Ok(());
         }
     };
-    let manager = songbird::get(ctx.serenity_context()).await.expect("loaded").clone();
+    let manager = songbird::get(ctx.serenity_context())
+        .await
+        .expect("loaded")
+        .clone();
 
     let _owo = manager.join(guild.id, connect).await;
 
+    info!("Join command completed");
+    ctx.defer_ephemeral().await?;
     ctx.say(">~<").await?;
     Ok(())
 
@@ -45,4 +50,3 @@ pub async fn join(ctx: Context<'_>) -> Result<(), Error> {
     //     }
     // }
 }
-
