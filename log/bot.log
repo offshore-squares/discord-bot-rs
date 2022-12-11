@@ -42,3 +42,39 @@
 2022-12-07 17:47:52 | INFO  | src\main.rs:23 — []
 2022-12-07 17:47:52 | INFO  | src\main.rs:24 — "src/command"
 2022-12-07 17:47:52 | INFO  | src\main.rs:46 — Running
+2022-12-09 09:36:07 | INFO  | src\main.rs:41 — Running
+2022-12-11 23:42:51 | INFO  | src\main.rs:41 — Running
+2022-12-11 23:52:56 | INFO  | src\main.rs:41 — Running
+2022-12-11 23:53:02 | INFO  | src\command\join.rs:27 — Join command completed
+2022-12-11 23:53:21 | INFO  | src\command\join.rs:27 — Join command completed
+2022-12-11 23:56:40 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:02:25 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:03:12 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:03:20 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:06:56 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:07:08 | INFO  | src\command\join.rs:27 — Join command completed
+2022-12-12 00:07:12 | INFO  | src\command\leave.rs:27 — leave command completed
+2022-12-12 00:08:15 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:08:19 | INFO  | src\command\join.rs:27 — Join command completed
+2022-12-12 00:09:55 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:10:36 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:15:08 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:15:32 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:15:59 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:20:29 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:20:47 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:23:54 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:24:00 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:24:07 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:24:31 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:24:39 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:24:59 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:25:41 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:31:03 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:40:24 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:42:03 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:42:32 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:42:38 | INFO  | src\command\join.rs:27 — Join command completed
+2022-12-12 00:44:05 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:44:48 | INFO  | src\main.rs:41 — Running
+2022-12-12 00:44:58 | INFO  | src\command\join.rs:27 — Join command completed
