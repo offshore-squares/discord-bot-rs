@@ -24,8 +24,9 @@ pub async fn play(ctx: Context<'_>) -> Result<(), Error> {
         .clone();
 
     let handler = manager.get(guild.id).unwrap();
+    info!("got handler");
 
-    let track = songbird::create_player(songbird::input::ytdl_search("penis").await?);
+    let track = songbird::create_player(songbird::input::ytdl("https://www.youtube.com/watch?v=e4dWh0gKjMI").await?);
     handler.lock().await.play(track.0);
 
     Ok(())
