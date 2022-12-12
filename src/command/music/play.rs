@@ -26,12 +26,12 @@ pub async fn play(
         .expect("loaded")
         .clone();
 
+    ctx.say("nggh").await?;
+
     let input = songbird::input::ytdl_search(search_query).await?;
     let metadata = input.metadata.clone();
 
-    ctx.say("nggh").await?;
-
-    match metadata.title {
+    let _owo = match metadata.title {
         Some(title) => ctx.say(format!("Speelt nu: {:?}", title)).await.unwrap(),
         None => {
             ctx.say("Geen titel gevonden").await.unwrap();
