@@ -1,3 +1,4 @@
 {
-    "crates.listPreReleases": true
+    "crates.listPreReleases": true,
+    "stylelint.enable": false,
 }
