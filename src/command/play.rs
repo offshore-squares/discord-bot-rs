@@ -29,9 +29,8 @@ pub async fn play(
     let input = songbird::input::ytdl_search(search_query).await?;
     let metadata = input.metadata.clone();
 
-    info!("{:?}", metadata);
-
     ctx.say("nggh").await?;
+
     match metadata.title {
         Some(title) => ctx.say(format!("Speelt nu: {:?}", title)).await.unwrap(),
         None => {
