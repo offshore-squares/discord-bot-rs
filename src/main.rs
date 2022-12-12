@@ -1,3 +1,5 @@
+use std::env::{self, current_dir};
+
 use poise::serenity_prelude as serenity;
 use poise::{Framework, FrameworkOptions};
 use songbird::SerenityInit;
@@ -15,6 +17,10 @@ pub type Context<'a> = poise::Context<'a, Data, Error>;
 
 #[tokio::main]
 async fn main() {
+    let path = env::var("PATH").unwrap();
+    let current_dir = current_dir().unwrap();
+    let current_dir = current_dir.to_str().unwrap();
+    std::env::set_var("PATH", path + ";" + current_dir + "/lib");
     let _ = dotenvy::dotenv();
     log4rs::init_file("log4rs.yml", Default::default()).unwrap();
 
