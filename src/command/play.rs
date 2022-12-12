@@ -2,7 +2,10 @@ use crate::{Context, Error};
 
 /// Plays your song => with url
 #[command(slash_command)]
-pub async fn play(ctx: Context<'_>) -> Result<(), Error> {
+pub async fn play(
+    ctx: Context<'_>,
+    #[description = "Search tag"] search_query: String,
+) -> Result<(), Error> {
     let guild = ctx.guild().unwrap();
 
     let voice_channel = guild
@@ -23,9 +26,23 @@ pub async fn play(ctx: Context<'_>) -> Result<(), Error> {
         .expect("loaded")
         .clone();
 
-    let handler = manager.get(guild.id).unwrap();
+    let input = songbird::input::ytdl_search(search_query).await?;
+    let metadata = input.metadata.clone();
 
-    let track = songbird::create_player(songbird::input::ytdl_search("penis").await?);
+    info!("{:?}", metadata);
+
+    ctx.say("nggh").await?;
+    match metadata.title {
+        Some(title) => ctx.say(format!("Speelt nu: {:?}", title)).await.unwrap(),
+        None => {
+            ctx.say("Geen titel gevonden").await.unwrap();
+            return Ok(());
+        }
+    };
+
+    //TODO handeling
+    let handler = manager.get(guild.id).unwrap();
+    let track = songbird::create_player(input);
     handler.lock().await.play(track.0);
 
     Ok(())
