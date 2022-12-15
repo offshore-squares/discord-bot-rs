@@ -18,7 +18,7 @@ pub async fn play(
         .get(&ctx.author().id)
         .and_then(|voice_state| voice_state.channel_id);
 
-    let _connect = match voice_channel {
+    let connect = match voice_channel {
         Some(channel) => channel,
         None => {
             ctx.say("You are not in a voice channel, baka").await?;
@@ -30,6 +30,10 @@ pub async fn play(
         .await
         .expect("loaded")
         .clone();
+
+    if manager.get(guild.id).is_none() {
+        let _owo = manager.join(guild.id, connect).await;
+    }
 
     ctx.defer().await?;
     let input = songbird::input::ytdl_search(search_query).await?;
