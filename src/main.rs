@@ -1,6 +1,6 @@
 use std::env::{self, current_dir};
 
-use poise::serenity_prelude as serenity;
+use poise::serenity_prelude::{self as serenity, Activity};
 use poise::{Framework, FrameworkOptions};
 use songbird::SerenityInit;
 
@@ -41,6 +41,11 @@ async fn main() {
                     serenity::GuildId(1049757728647680010),
                 )
                 .await?;
+                ctx.set_presence(
+                    Some(Activity::playing(std::env::var("PRESENCE").expect("oop~"))),
+                    serenity::OnlineStatus::DoNotDisturb,
+                )
+                .await;
                 Ok(Data {})
             })
         });
