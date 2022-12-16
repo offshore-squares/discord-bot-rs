@@ -1,9 +1,7 @@
-use std::vec;
-
-use poise::serenity_prelude::Color;
-use songbird::input::Metadata;
-
 use crate::{Context, Error};
+use poise::serenity_prelude::{Color, GuildId};
+use songbird::{input::Metadata, tracks::TrackQueue};
+use std::{collections::HashMap, vec};
 
 /// Plays your song => with url
 #[command(slash_command)]
@@ -12,12 +10,16 @@ pub async fn play(
     #[description = "Search tag"] search_query: String,
 ) -> Result<(), Error> {
     let guild = ctx.guild().unwrap();
+    let mut queues: HashMap<GuildId, TrackQueue> = Default::default();
+    let queue = queues.entry(guild.id).or_default();
 
+    //gets voice channel of user
     let voice_channel = guild
         .voice_states
         .get(&ctx.author().id)
         .and_then(|voice_state| voice_state.channel_id);
 
+    //Checks if user is in said voice channel
     let connect = match voice_channel {
         Some(channel) => channel,
         None => {
@@ -26,26 +28,33 @@ pub async fn play(
         }
     };
 
+    //manager for voice channel
     let manager = songbird::get(ctx.serenity_context())
         .await
         .expect("loaded")
         .clone();
 
+    //joins if bot hasn't joined already
     if manager.get(guild.id).is_none() {
         let _owo = manager.join(guild.id, connect).await;
     }
 
     ctx.defer().await?;
-    let input = songbird::input::ytdl_search(search_query).await?;
-    let metadata = input.metadata.clone();
 
-    //info!("{:?}", metadata);
+    let input;
+    if search_query.contains("https://www.youtube.com/") {
+        input = songbird::input::ytdl(search_query).await?;
+    } else {
+        input = songbird::input::ytdl_search(search_query).await?;
+    }
+
+    let metadata = input.metadata.clone();
 
     //TODO handeling
     let handler = manager.get(guild.id).unwrap();
     let track = songbird::create_player(input);
-    handler.lock().await.play(track.0);
-    //OWo
+    queue.add(track.0, &mut handler.lock().await.to_owned());
+    handler.lock().await.play(queue.current().into());
 
     let seconds = metadata.clone().duration.unwrap().as_secs() % 60;
     let minutes = (metadata.clone().duration.unwrap().as_secs() / 60) % 60;

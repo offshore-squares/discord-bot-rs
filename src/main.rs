@@ -5,6 +5,7 @@ use poise::{Framework, FrameworkOptions};
 use songbird::SerenityInit;
 
 mod command;
+mod util;
 
 #[macro_use]
 extern crate poise;

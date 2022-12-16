@@ -28,25 +28,25 @@ pub async fn join(ctx: Context<'_>) -> Result<(), Error> {
     ctx.defer_ephemeral().await?;
     ctx.say(">~<").await?;
     Ok(())
-
-    // let id = ctx.guild_id();
-    // if id.is_none() {
-    //     return;
-    // }
-    // let id = id.unwrap();
-
-    // if let Some(id) = ctx.guild_id() {
-    //     id;
-    // } else {
-    //     // No id
-    // }
-
-    // match ctx.guild_id() {
-    //     Some(id) => {
-
-    //     }
-    //     None => {
-    //         ctx.say("fucxk ytou").await?;
-    //     }
-    // }
 }
+
+// let id = ctx.guild_id();
+// if id.is_none() {
+//     return;
+// }
+// let id = id.unwrap();
+
+// if let Some(id) = ctx.guild_id() {
+//     id;
+// } else {
+//     // No id
+// }
+
+// match ctx.guild_id() {
+//     Some(id) => {
+
+//     }
+//     None => {
+//         ctx.say("fucxk ytou").await?;
+//     }
+// }
