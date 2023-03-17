@@ -10,8 +10,6 @@ pub async fn play(
     #[description = "Search tag"] search_query: String,
 ) -> Result<(), Error> {
     let guild = ctx.guild().unwrap();
-    let mut queues: HashMap<GuildId, TrackQueue> = Default::default();
-    let queue = queues.entry(guild.id).or_default();
 
     // Gets voice channel of user
     let voice_channel = guild
@@ -47,19 +45,22 @@ pub async fn play(
     ctx.defer().await?;
     let search_query = search_query.trim().to_string();
     let input = if search_query.starts_with("https://www.youtube.com/") {
-        songbird::input::ytdl(search_query).await.map_err(|e| format!("ytdl failed {:#?}", e))?
+        songbird::input::ytdl(search_query)
+            .await
+            .map_err(|e| format!("ytdl failed {:#?}", e))?
     } else {
-        songbird::input::ytdl_search(search_query).await.map_err(|e| format!("ytdl_search failed {:#?}", e))?
+        songbird::input::ytdl_search(search_query)
+            .await
+            .map_err(|e| format!("ytdl_search failed {:#?}", e))?
     };
 
     let metadata = input.metadata.clone();
 
     //TODO handeling
-    let (track, track_handle) = songbird::create_player(input);
+    let (track, _) = songbird::create_player(input);
     {
         let mut handler = handler.lock().await;
-        queue.add(track, &mut handler);
-        track_handle.play()?;
+        handler.enqueue(track)
     }
 
     let duration = metadata.duration.unwrap().as_secs();

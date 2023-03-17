@@ -23,7 +23,10 @@ pub async fn leave(ctx: Context<'_>) -> Result<(), Error> {
         .expect("loaded")
         .clone();
 
+    let handler = manager.get(guild.id).unwrap();
     let _owo = manager.leave(guild.id).await;
+    let music = handler.lock().await;
+    music.queue().stop();
 
     info!("leave command completed");
     ctx.defer_ephemeral().await?;

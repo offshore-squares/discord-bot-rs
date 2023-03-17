@@ -26,10 +26,11 @@ async fn main() {
     let mut ytdlp_path = PathBuf::new();
     ytdlp_path.push(current_dir);
     ytdlp_path.push("lib");
-    std::env::set_var("PATH", path + ";" + ytdlp_path.to_str().unwrap());
+    std::env::set_var("PATH", path + ":" + ytdlp_path.to_str().unwrap());
 
     let _ = dotenvy::dotenv();
     log4rs::init_file("log4rs.yml", Default::default()).unwrap();
+    info!("{:?}", ytdlp_path.to_str().unwrap());
 
     info!("PATH is {:?}", std::env::var("PATH"));
 
@@ -50,7 +51,9 @@ async fn main() {
                 )
                 .await?;
                 ctx.set_presence(
-                    Some(Activity::playing(std::env::var("PRESENCE").unwrap_or("oop~".to_string()))),
+                    Some(Activity::playing(
+                        std::env::var("PRESENCE").unwrap_or("oop~".to_string()),
+                    )),
                     serenity::OnlineStatus::DoNotDisturb,
                 )
                 .await;
