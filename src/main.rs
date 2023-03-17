@@ -50,7 +50,9 @@ async fn main() {
                 )
                 .await?;
                 ctx.set_presence(
-                    Some(Activity::playing(std::env::var("PRESENCE").unwrap_or("oop~".to_string()))),
+                    Some(Activity::playing(
+                        std::env::var("PRESENCE").unwrap_or("oop~".to_string()),
+                    )),
                     serenity::OnlineStatus::DoNotDisturb,
                 )
                 .await;

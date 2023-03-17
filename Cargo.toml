@@ -30,5 +30,9 @@ actix-rt = "2.7"
 actix-service = "2"
 regex = "1"
 lazy_static = "1"
-songbird = { version = "0.3.1", features = ["yt-dlp", "builtin-queue"] }
+songbird = { version = "0.3.1", features = [
+    # "yt-dlp",
+    "youtube-dlc",
+    "builtin-queue"
+] }
 audiopus_sys = "0.2.2"
