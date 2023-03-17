@@ -1,4 +1,5 @@
 use std::env::{self, current_dir};
+use std::path::PathBuf;
 
 use poise::serenity_prelude::{self as serenity, Activity};
 use poise::{Framework, FrameworkOptions};
@@ -15,16 +16,22 @@ extern crate log;
 pub struct Data {}
 pub type Error = Box<dyn std::error::Error + Send + Sync>;
 pub type Context<'a> = poise::Context<'a, Data, Error>;
+pub type ApplicationContext<'a> = poise::ApplicationContext<'a, Data, Error>;
 
 #[tokio::main]
 async fn main() {
     let path = env::var("PATH").unwrap();
     let current_dir = current_dir().unwrap();
     let current_dir = current_dir.to_str().unwrap();
-    std::env::set_var("PATH", path + ";" + current_dir + "/lib");
+    let mut ytdlp_path = PathBuf::new();
+    ytdlp_path.push(current_dir);
+    ytdlp_path.push("lib");
+    std::env::set_var("PATH", path + ";" + ytdlp_path.to_str().unwrap());
 
     let _ = dotenvy::dotenv();
     log4rs::init_file("log4rs.yml", Default::default()).unwrap();
+
+    info!("PATH is {:?}", std::env::var("PATH"));
 
     let framework = Framework::builder()
         .options(FrameworkOptions {
@@ -43,7 +50,7 @@ async fn main() {
                 )
                 .await?;
                 ctx.set_presence(
-                    Some(Activity::playing(std::env::var("PRESENCE").expect("oop~"))),
+                    Some(Activity::playing(std::env::var("PRESENCE").unwrap_or("oop~".to_string()))),
                     serenity::OnlineStatus::DoNotDisturb,
                 )
                 .await;
