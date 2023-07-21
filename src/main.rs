@@ -14,26 +14,14 @@ extern crate poise;
 extern crate log;
 
 pub struct Data {}
+// Box because we don't know how big the error, send, sync are at compile time
 pub type Error = Box<dyn std::error::Error + Send + Sync>;
 pub type Context<'a> = poise::Context<'a, Data, Error>;
 pub type ApplicationContext<'a> = poise::ApplicationContext<'a, Data, Error>;
 
 #[tokio::main]
 async fn main() {
-    let path = env::var("PATH").unwrap();
-    let current_dir = current_dir().unwrap();
-    let current_dir = current_dir.to_str().unwrap();
-    let mut ytdlp_path = PathBuf::new();
-    ytdlp_path.push(current_dir);
-    ytdlp_path.push("lib");
-    std::env::set_var("PATH", path + ":" + ytdlp_path.to_str().unwrap());
-
-    let _ = dotenvy::dotenv();
-    log4rs::init_file("log4rs.yml", Default::default()).unwrap();
-    info!("{:?}", ytdlp_path.to_str().unwrap());
-
-    info!("PATH is {:?}", std::env::var("PATH"));
-
+    init_path().await.unwrap();
     let framework = Framework::builder()
         .options(FrameworkOptions {
             commands: command::commands(),
@@ -64,4 +52,25 @@ async fn main() {
     info!("Running");
 
     framework.run().await.unwrap();
+}
+
+/// Init Path with logger
+async fn init_path() -> Result<(), Box<dyn std::error::Error>> {
+    let path = env::var("PATH").unwrap();
+    let current_dir = current_dir().unwrap();
+    let current_dir = current_dir.to_str().unwrap();
+
+    // set ytdlp to Path env
+    let mut ytdlp_path = PathBuf::new();
+    ytdlp_path.push(current_dir);
+    ytdlp_path.push("lib");
+    std::env::set_var("PATH", path + ":" + ytdlp_path.to_str().unwrap());
+
+    dotenvy::dotenv().ok();
+    log4rs::init_file("log4rs.yml", Default::default()).unwrap();
+
+    info!("YTDLP path: {:?}", ytdlp_path.to_str().unwrap());
+    info!("PATH is {:?}", std::env::var("PATH"));
+
+    Ok(())
 }

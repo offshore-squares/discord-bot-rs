@@ -1,7 +1,7 @@
-use crate::{Context, Error};
-use poise::serenity_prelude::{Color, GuildId};
-use songbird::{input::Metadata, tracks::TrackQueue};
-use std::{collections::HashMap, vec};
+use crate::{util, Context, Error};
+use poise::serenity_prelude::Color;
+use songbird::input::Metadata;
+use std::vec;
 
 /// Plays your song => with url
 #[command(slash_command)]
@@ -9,34 +9,13 @@ pub async fn play(
     ctx: Context<'_>,
     #[description = "Search tag"] search_query: String,
 ) -> Result<(), Error> {
-    let guild = ctx.guild().unwrap();
-
-    // Gets voice channel of user
-    let voice_channel = guild
-        .voice_states
-        .get(&ctx.author().id)
-        .and_then(|voice_state| voice_state.channel_id);
-
-    // Checks if user is in said voice channel
-    let connect = match voice_channel {
-        Some(channel) => channel,
-        None => {
-            ctx.say("You are not in a voice channel, baka").await?;
-            return Ok(());
-        }
-    };
-
-    // Get manager for voice channel
-    let manager = songbird::get(ctx.serenity_context())
-        .await
-        .expect("loaded")
-        .clone();
+    let (guild, manager, voice_channel) = util::manager::get_manager(ctx).await.unwrap();
 
     // Joins voice channel if bot hasn't joined already
     let handler = if let Some(handler) = manager.get(guild.id) {
         handler
     } else {
-        let (handler, success) = manager.join(guild.id, connect).await;
+        let (handler, success) = manager.join(guild.id, voice_channel).await;
         // Throw if join failed
         success?;
         handler
