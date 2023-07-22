@@ -64,7 +64,11 @@ async fn init_path() -> Result<(), Box<dyn std::error::Error>> {
     let mut ytdlp_path = PathBuf::new();
     ytdlp_path.push(current_dir);
     ytdlp_path.push("lib");
-    std::env::set_var("PATH", path + ":" + ytdlp_path.to_str().unwrap());
+
+    #[cfg(windows)]
+    std::env::set_var("PATH", path + ";" + ytdlp_path.to_str().unwrap());
+    #[cfg(unix)]
+    std::env::set_var("PATH", path + ";" + ytdlp_path.to_str().unwrap());
 
     dotenvy::dotenv().ok();
     log4rs::init_file("log4rs.yml", Default::default()).unwrap();
