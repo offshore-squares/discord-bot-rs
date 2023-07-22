@@ -3,7 +3,7 @@ use poise::Command;
 
 mod age;
 mod help;
-mod music;
+pub mod music;
 mod questing;
 
 pub fn commands() -> Vec<Command<Data, Error>> {

@@ -1,4 +1,4 @@
 /target
 .env
 log/*.log
-/lib/ff*.*
+/lib/ff*.exe

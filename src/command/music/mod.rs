@@ -1,7 +1,7 @@
 use crate::{Context, Error};
 
 mod join;
-mod leave;
+pub mod leave;
 mod play;
 
 /// Music commands

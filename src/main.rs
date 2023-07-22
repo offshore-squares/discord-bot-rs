@@ -6,6 +6,7 @@ use poise::{Framework, FrameworkOptions};
 use songbird::SerenityInit;
 
 mod command;
+mod event;
 mod util;
 
 #[macro_use]
@@ -38,19 +39,21 @@ async fn main() {
                     serenity::GuildId(1049757728647680010),
                 )
                 .await?;
-                ctx.set_presence(
-                    Some(Activity::playing(
-                        std::env::var("PRESENCE").unwrap_or("oop~".to_string()),
-                    )),
-                    serenity::OnlineStatus::DoNotDisturb,
-                )
-                .await;
+                framework
+                    .client()
+                    .ctx
+                    .set_presence(
+                        Some(Activity::playing(
+                            std::env::var("PRESENCE").unwrap_or("oop~".to_string()),
+                        )),
+                        serenity::OnlineStatus::DoNotDisturb,
+                    )
+                    .await;
                 Ok(Data {})
             })
         });
 
     info!("Running");
-
     framework.run().await.unwrap();
 }
 

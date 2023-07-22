@@ -22,7 +22,7 @@ pub async fn join(ctx: Context<'_>) -> Result<(), Error> {
         .expect("loaded")
         .clone();
 
-    let _owo = manager.join(guild.id, connect).await;
+    let _ = manager.join(guild.id, connect).await;
 
     info!("Join command completed");
     ctx.defer_ephemeral().await?;
