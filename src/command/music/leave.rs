@@ -1,35 +1,26 @@
-use crate::{Context, Error};
+use poise::serenity_prelude::Guild;
+use songbird::Songbird;
+use std::sync::Arc;
+
+use crate::{util, Context, Error};
 
 /// Bot will join your call
 #[command(slash_command)]
 pub async fn leave(ctx: Context<'_>) -> Result<(), Error> {
-    let guild = ctx.guild().unwrap();
-
-    let voice_channel = guild
-        .voice_states
-        .get(&ctx.author().id)
-        .and_then(|voice_state| voice_state.channel_id);
-
-    match voice_channel {
-        Some(channel) => channel,
-        None => {
-            ctx.say("You are not in a voice channel, poopoo").await?;
-            return Ok(());
-        }
-    };
-
-    let manager = songbird::get(ctx.serenity_context())
-        .await
-        .expect("loaded")
-        .clone();
-
-    let handler = manager.get(guild.id).unwrap();
-    let _owo = manager.leave(guild.id).await;
-    let music = handler.lock().await;
-    music.queue().stop();
-
+    // TODO add check for channel
+    let (guild, manager, _channel) = util::manager::get_manager(ctx).await.unwrap();
+    leave_channel(manager, guild).await;
     info!("leave command completed");
     ctx.defer_ephemeral().await?;
     ctx.say("I left you forever").await?;
     Ok(())
+}
+
+/// Leave channel
+/// manager(songbird) and pass guild
+pub async fn leave_channel(manager: Arc<Songbird>, guild: Guild) {
+    let handler = manager.get(guild.id).unwrap();
+    let _owo = manager.leave(guild.id).await;
+    let music = handler.lock().await;
+    music.queue().stop();
 }

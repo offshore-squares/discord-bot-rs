@@ -1,6 +1,7 @@
 use std::env::{self, current_dir};
 use std::path::PathBuf;
 
+use crate::event::music_event::Handler;
 use poise::serenity_prelude::{self as serenity, Activity};
 use poise::{Framework, FrameworkOptions};
 use songbird::SerenityInit;
@@ -30,7 +31,7 @@ async fn main() {
         })
         .token(std::env::var("DISCORD_KEY").expect("No mo token bitch"))
         .intents(serenity::GatewayIntents::non_privileged())
-        .client_settings(|client_builder| client_builder.register_songbird())
+        .client_settings(|client_builder| client_builder.event_handler(Handler).register_songbird())
         .setup(|ctx, _ready, framework| {
             Box::pin(async move {
                 poise::builtins::register_in_guild(
@@ -39,16 +40,13 @@ async fn main() {
                     serenity::GuildId(1049757728647680010),
                 )
                 .await?;
-                framework
-                    .client()
-                    .ctx
-                    .set_presence(
-                        Some(Activity::playing(
-                            std::env::var("PRESENCE").unwrap_or("oop~".to_string()),
-                        )),
-                        serenity::OnlineStatus::DoNotDisturb,
-                    )
-                    .await;
+                ctx.set_presence(
+                    Some(Activity::playing(
+                        std::env::var("PRESENCE").unwrap_or("oop~".to_string()),
+                    )),
+                    serenity::OnlineStatus::DoNotDisturb,
+                )
+                .await;
                 Ok(Data {})
             })
         });

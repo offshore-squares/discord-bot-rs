@@ -1,4 +1,4 @@
-use poise::serenity_prelude::{ChannelId, Guild};
+use poise::serenity_prelude::{ChannelId, Context as SerenityContext, Guild, GuildId};
 use songbird::Songbird;
 use std::sync::Arc;
 
@@ -25,4 +25,9 @@ pub async fn get_manager(
         .clone();
 
     Ok((guild, manager, voice_channel))
+}
+
+pub async fn get_manager_serenity(ctx: SerenityContext) -> Arc<Songbird> {
+    //manager for voice channel
+    songbird::get(&ctx).await.expect("loaded").clone()
 }
