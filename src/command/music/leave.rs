@@ -7,9 +7,14 @@ use crate::{util, Context, Error};
 /// Bot will join your call
 #[command(slash_command)]
 pub async fn leave(ctx: Context<'_>) -> Result<(), Error> {
-    // TODO add check for channel
-    let (guild, manager, _channel) = util::manager::get_manager(ctx).await.unwrap();
+    let guild = ctx.guild().unwrap();
+
+    let (manager, _channel) =
+        util::manager::get_manager(&guild, ctx.author(), ctx.serenity_context())
+            .await
+            .unwrap();
     leave_channel(manager, guild).await;
+
     info!("leave command completed");
     ctx.defer_ephemeral().await?;
     ctx.say("I left you forever").await?;

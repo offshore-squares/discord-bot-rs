@@ -1,33 +1,28 @@
-use poise::serenity_prelude::{ChannelId, Context as SerenityContext, Guild, GuildId};
+use poise::serenity_prelude::{ChannelId, Context as SerenityContext, Guild, User};
 use songbird::Songbird;
 use std::sync::Arc;
-
-use crate::Context;
 
 /**
  * does work, but needs to be made into macro for more cool
  */
 pub async fn get_manager(
-    ctx: Context<'_>,
-) -> Result<(Guild, Arc<Songbird>, ChannelId), Box<dyn std::error::Error>> {
-    let guild = ctx.guild().unwrap();
-
+    guild: &Guild,
+    author: &User,
+    context: &SerenityContext,
+) -> Result<(Arc<Songbird>, ChannelId), Box<dyn std::error::Error>> {
     let voice_channel = guild
         .voice_states
-        .get(&ctx.author().id)
+        .get(&author.id)
         .and_then(|voice_state| voice_state.channel_id)
         .unwrap();
 
     //manager for voice channel
-    let manager = songbird::get(ctx.serenity_context())
-        .await
-        .expect("loaded")
-        .clone();
+    let manager = get_manager_serenity(context).await;
 
-    Ok((guild, manager, voice_channel))
+    Ok((manager, voice_channel))
 }
 
-pub async fn get_manager_serenity(ctx: SerenityContext) -> Arc<Songbird> {
+pub async fn get_manager_serenity(ctx: &SerenityContext) -> Arc<Songbird> {
     //manager for voice channel
-    songbird::get(&ctx).await.expect("loaded").clone()
+    songbird::get(ctx).await.expect("loaded").clone()
 }

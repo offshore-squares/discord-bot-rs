@@ -1,28 +1,26 @@
-use crate::{Context, Error};
+use poise::serenity_prelude::{ChannelId, Context, Guild, User};
+use songbird::{error::JoinError, Call, Event, Songbird};
+use std::sync::Arc;
+use tokio::sync::Mutex;
+
+use crate::{event::music_event::TrackEndHandler, util, Context as CustomContext, Error};
 
 /// Join's your voice call
 #[command(slash_command)]
-pub async fn join(ctx: Context<'_>) -> Result<(), Error> {
+pub async fn join(ctx: CustomContext<'_>) -> Result<(), Error> {
     let guild = ctx.guild().unwrap();
 
-    let voice_channel = guild
-        .voice_states
-        .get(&ctx.author().id)
-        .and_then(|voice_state| voice_state.channel_id);
-
-    let connect = match voice_channel {
-        Some(channel) => channel,
-        None => {
-            ctx.say("You are not in a voice channel, baka").await?;
-            return Ok(());
-        }
-    };
-    let manager = songbird::get(ctx.serenity_context())
-        .await
-        .expect("loaded")
-        .clone();
-
-    let _ = manager.join(guild.id, connect).await;
+    let (manager, channel) =
+        util::manager::get_manager(&guild, ctx.author(), ctx.serenity_context())
+            .await
+            .unwrap();
+    let _ = join_channel(
+        manager,
+        &guild,
+        channel,
+        Some((ctx.serenity_context(), ctx.author(), &ctx.channel_id())),
+    )
+    .await;
 
     info!("Join command completed");
     ctx.defer_ephemeral().await?;
@@ -30,23 +28,24 @@ pub async fn join(ctx: Context<'_>) -> Result<(), Error> {
     Ok(())
 }
 
-// let id = ctx.guild_id();
-// if id.is_none() {
-//     return;
-// }
-// let id = id.unwrap();
-
-// if let Some(id) = ctx.guild_id() {
-//     id;
-// } else {
-//     // No id
-// }
-
-// match ctx.guild_id() {
-//     Some(id) => {
-
-//     }
-//     None => {
-//         ctx.say("fucxk ytou").await?;
-//     }
-// }
+pub async fn join_channel(
+    manager: Arc<Songbird>,
+    guild: &Guild,
+    voice_channel: ChannelId,
+    event_context: Option<(&Context, &User, &ChannelId)>,
+) -> Result<Arc<Mutex<Call>>, JoinError> {
+    let (handler_lock, success) = manager.join(guild.id, voice_channel).await;
+    if let Some(event) = event_context {
+        let mut handler = handler_lock.lock().await;
+        handler.add_global_event(
+            Event::Track(songbird::TrackEvent::End),
+            TrackEndHandler {
+                guild: guild.clone(),
+                context: event.0.clone(),
+                author: event.1.clone(),
+                channel_id: event.2.clone(),
+            },
+        );
+    }
+    success.map(|_| handler_lock)
+}

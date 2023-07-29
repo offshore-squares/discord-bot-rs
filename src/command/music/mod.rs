@@ -1,8 +1,8 @@
 use crate::{Context, Error};
 
-mod join;
+pub mod join;
 pub mod leave;
-mod play;
+pub mod play;
 
 /// Music commands
 #[poise::command(slash_command, subcommands("join::join", "leave::leave", "play::play"))]

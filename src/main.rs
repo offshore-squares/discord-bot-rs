@@ -1,13 +1,14 @@
 use std::env::{self, current_dir};
 use std::path::PathBuf;
 
-use crate::event::music_event::Handler;
+use crate::event::music_event::ClientHandler;
 use poise::serenity_prelude::{self as serenity, Activity};
 use poise::{Framework, FrameworkOptions};
 use songbird::SerenityInit;
 
 mod command;
 mod event;
+mod extension;
 mod util;
 
 #[macro_use]
@@ -31,7 +32,11 @@ async fn main() {
         })
         .token(std::env::var("DISCORD_KEY").expect("No mo token bitch"))
         .intents(serenity::GatewayIntents::non_privileged())
-        .client_settings(|client_builder| client_builder.event_handler(Handler).register_songbird())
+        .client_settings(|client_builder| {
+            client_builder
+                .event_handler(ClientHandler)
+                .register_songbird()
+        })
         .setup(|ctx, _ready, framework| {
             Box::pin(async move {
                 poise::builtins::register_in_guild(
@@ -75,7 +80,7 @@ async fn init_path() -> Result<(), Box<dyn std::error::Error>> {
     log4rs::init_file("log4rs.yml", Default::default()).unwrap();
 
     info!("YTDLP path: {:?}", ytdlp_path.to_str().unwrap());
-    info!("PATH is {:?}", std::env::var("PATH"));
+    // info!("PATH is {:?}", std::env::var("PATH"));
 
     Ok(())
 }
