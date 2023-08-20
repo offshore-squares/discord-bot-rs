@@ -6,7 +6,7 @@ use tokio::sync::Mutex;
 use crate::{event::music_event::TrackEndHandler, util, Context as CustomContext, Error};
 
 /// Join's your voice call
-#[command(slash_command)]
+#[command(slash_command, ephemeral)]
 pub async fn join(ctx: CustomContext<'_>) -> Result<(), Error> {
     let guild = ctx.guild().unwrap();
 
@@ -23,7 +23,6 @@ pub async fn join(ctx: CustomContext<'_>) -> Result<(), Error> {
     .await;
 
     info!("Join command completed");
-    ctx.defer_ephemeral().await?;
     ctx.say(">~<").await?;
     Ok(())
 }

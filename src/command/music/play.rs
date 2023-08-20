@@ -51,10 +51,10 @@ pub async fn play(
         // If this will be the current song send embed otherwise end message that its added to queue
         if handler.queue().len() == 1 {
             let _ = ctx
-                .send(|f| {
-                    f.embed(|f| {
-                        send_music_embed(metadata, f, &ctx.author());
-                        f
+                .send(|reply| {
+                    reply.embed(|embed| {
+                        send_music_embed(metadata, embed, &ctx.author());
+                        embed
                     })
                 })
                 .await;
@@ -81,7 +81,7 @@ fn format_duration(duration: u64) -> String {
     }
 }
 
-pub fn send_music_embed(metadata: Box<Metadata>, f: &mut CreateEmbed, author: &User) {
+pub fn send_music_embed(metadata: Box<Metadata>, embed: &mut CreateEmbed, author: &User) {
     let duration = format_duration(metadata.duration.unwrap().as_secs());
     if let Metadata {
         title: Some(title),
@@ -92,7 +92,8 @@ pub fn send_music_embed(metadata: Box<Metadata>, f: &mut CreateEmbed, author: &U
         ..
     } = *metadata
     {
-        f.title(title)
+        embed
+            .title(title)
             .thumbnail(thumbnail)
             .author(|f| {
                 f.icon_url(author.avatar_url().unwrap())

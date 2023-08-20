@@ -32,3 +32,4 @@ regex = "1"
 lazy_static = "1"
 songbird = { version = "0.3.0", features = ["yt-dlp", "builtin-queue"] }
 audiopus_sys = "0.2.2"
+rand = "0.8.5"

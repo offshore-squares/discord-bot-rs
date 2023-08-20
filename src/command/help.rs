@@ -7,7 +7,7 @@ pub async fn help(
     #[description = "Command"] command: Option<String>,
 ) -> Result<(), Error> {
     let config = poise::builtins::HelpConfiguration {
-        extra_text_at_bottom: "eat shit and die.",
+        extra_text_at_bottom: ":flushed:",
         ..Default::default()
     };
     poise::builtins::help(ctx, command.as_deref(), config).await?;
