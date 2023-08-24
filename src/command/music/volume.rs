@@ -18,15 +18,14 @@ pub async fn volume(
     let handler_lock = manager.get(guild.id).unwrap();
     let handler = handler_lock.lock().await;
     let call = handler.queue();
+
     call.modify_queue(|q| {
         q.iter().for_each(|song| {
             song.set_volume(volume_amount).unwrap();
         });
     });
-    ctx.say(format!(
-        "uwu imagine setting volume to {}",
-        volume_amount * 100.0
-    ))
-    .await?;
+
+    ctx.say(format!("volume set to {}", volume_amount * 100.0))
+        .await?;
     Ok(())
 }
