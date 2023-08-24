@@ -5,6 +5,7 @@ pub mod leave;
 pub mod play;
 pub mod shuffle;
 pub mod skip;
+pub mod volume;
 
 /// Music commands
 #[poise::command(
@@ -15,7 +16,8 @@ pub mod skip;
         "leave::leave",
         "play::play",
         "skip::skip",
-        "shuffle::shuffle"
+        "shuffle::shuffle",
+        "volume::volume"
     )
 )]
 pub async fn music(_ctx: Context<'_>) -> Result<(), Error> {

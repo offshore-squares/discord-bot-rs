@@ -2,6 +2,7 @@ use crate::{util, Context as CustomContext, Error};
 use rand::thread_rng;
 use rand::Rng;
 
+/// Shuffle the current queue
 #[command(slash_command)]
 pub async fn shuffle(ctx: CustomContext<'_>) -> Result<(), Error> {
     let guild = ctx.guild().unwrap();
