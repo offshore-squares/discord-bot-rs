@@ -1,6 +1,6 @@
 use crate::{
     command,
-    util::{self},
+    util::{self, music::send_music_embed},
 };
 use poise::serenity_prelude::*;
 use songbird::{EventContext, EventHandler as SongbirdEvent};
@@ -48,7 +48,7 @@ impl SongbirdEvent for TrackEndHandler {
                 self.channel_id
                     .send_message(self.context.http(), |e| {
                         e.embed(|f| {
-                            command::music::play::send_music_embed(
+                            send_music_embed(
                                 Box::new(queue.current().unwrap().metadata().clone().to_owned()),
                                 f,
                                 &self.author,

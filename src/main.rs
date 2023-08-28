@@ -16,7 +16,9 @@ extern crate poise;
 #[macro_use]
 extern crate log;
 
-pub struct Data {}
+pub struct Data {
+    queue: Vec<String>,
+}
 // Box because we don't know how big the error, send, sync are at compile time
 pub type Error = Box<dyn std::error::Error + Send + Sync>;
 pub type Context<'a> = poise::Context<'a, Data, Error>;
@@ -52,7 +54,7 @@ async fn main() {
                     serenity::OnlineStatus::DoNotDisturb,
                 )
                 .await;
-                Ok(Data {})
+                Ok(Data { queue: vec![] })
             })
         });
 
