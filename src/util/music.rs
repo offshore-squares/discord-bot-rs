@@ -72,6 +72,6 @@ pub async fn search(search_query: String) -> Result<Input, String> {
     }
 }
 
-pub async fn youtube_playlist(search_query: String) {
-    let version = "yt-dlp";
-}
+// pub async fn youtube_playlist(search_query: String) {
+//     let version = "yt-dlp";
+// }

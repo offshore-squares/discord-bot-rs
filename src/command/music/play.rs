@@ -16,9 +16,11 @@ pub async fn play(
     #[description = "Search tag"] search_query: String,
 ) -> Result<(), Error> {
     let search_query = search_query.trim().to_string();
+    let guild = ctx.guild().unwrap();
+
     let data = ctx.serenity_context().data.read().await;
     let data = data.get::<crate::DataKey>().unwrap();
-    let guild = ctx.guild().unwrap();
+
     let mut queue_map = data.queue_map.get_queue_map().await;
     let queue = queue_map.get_queue_by_id(guild.id);
 
@@ -45,12 +47,15 @@ pub async fn play(
     // Get metadata
     let metadata = input.metadata.clone();
     // if own queue is empty enqueue song
+    println!("{:#?}", queue.iter().map(|s| s.title.as_ref().unwrap()));
+
+    // TODO Should not be added when command is called for the first time
     queue.push(*metadata.clone());
-    println!("{:#?}", queue);
     if queue.len() == 1 {
         let (track, _) = songbird::create_player(input);
         {
             let mut handler = handler.lock().await;
+
             handler.enqueue(track);
             let _ = ctx
                 .send(|reply| {
