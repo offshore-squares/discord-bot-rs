@@ -1,28 +1,21 @@
-use crate::{util, Context as CustomContext, Error};
+use crate::model::queue::GetQueueByGuildId;
+use crate::{Context as CustomContext, Error};
+use rand::rngs::ThreadRng;
+use rand::seq::SliceRandom;
 use rand::thread_rng;
-use rand::Rng;
 
 /// Shuffle the current queue
 #[command(slash_command)]
 pub async fn shuffle(ctx: CustomContext<'_>) -> Result<(), Error> {
     let guild = ctx.guild().unwrap();
-    let (manager, _voice_channel) =
-        util::manager::get_manager(&guild, ctx.author(), ctx.serenity_context())
-            .await
-            .unwrap();
+    let mut queue_map = ctx.data().queue_map.get_queue_map().await;
+    let queue = queue_map.get_queue_by_id(guild.id);
 
-    let handler_lock = manager.get(guild.id).unwrap();
-    let handler = handler_lock.lock().await;
-    let queue = handler.queue();
     if queue.len() > 2 {
-        queue.modify_queue(|q| {
-            let mut rng: rand::rngs::ThreadRng = thread_rng();
-            for _ in 0..q.len() * 3 {
-                let old_song = rng.gen_range(0..q.len());
-                let new_song = rng.gen_range(0..q.len());
-                q.swap(old_song, new_song)
-            }
-        });
+        {
+            let mut rng: ThreadRng = thread_rng();
+            queue.shuffle(&mut rng);
+        }
         ctx.say("Queue has been shuffled").await?;
     } else {
         ctx.say("Cannot shuffle a queue when there is nothing to shuffle")

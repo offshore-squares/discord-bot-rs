@@ -1,12 +1,12 @@
 use crate::{
     command,
+    model::queue::GetQueueByGuildId,
     util::{
         self,
         music::{search, send_music_embed},
     },
     Context, Error,
 };
-
 use std::vec;
 
 /// Plays your song => with url
@@ -16,14 +16,17 @@ pub async fn play(
     #[description = "Search tag"] search_query: String,
 ) -> Result<(), Error> {
     let search_query = search_query.trim().to_string();
-    let mut queue = ctx.data().queue.clone();
+    let data = ctx.serenity_context().data.read().await;
+    let data = data.get::<crate::DataKey>().unwrap();
     let guild = ctx.guild().unwrap();
+    let mut queue_map = data.queue_map.get_queue_map().await;
+    let queue = queue_map.get_queue_by_id(guild.id);
+
     let (manager, voice_channel) =
         util::manager::get_manager(&guild, ctx.author(), ctx.serenity_context())
             .await
             .unwrap();
 
-    // TODO Joins voice channel if bot hasn't joined already
     let handler = if let Some(handler) = manager.get(guild.id) {
         handler
     } else {
@@ -36,18 +39,19 @@ pub async fn play(
         .await?
     };
 
-    // if own queue is empty search song and play it
-    if queue.len() == 0 {
-        ctx.defer().await?;
-        let input = search(search_query).await.unwrap();
-        warn!("{:#?}", input);
-        let metadata = input.metadata.clone();
-
+    ctx.defer().await?;
+    // Get song from source
+    let input = search(search_query).await.unwrap();
+    // Get metadata
+    let metadata = input.metadata.clone();
+    // if own queue is empty enqueue song
+    queue.push(*metadata.clone());
+    println!("{:#?}", queue);
+    if queue.len() == 1 {
         let (track, _) = songbird::create_player(input);
         {
             let mut handler = handler.lock().await;
             handler.enqueue(track);
-
             let _ = ctx
                 .send(|reply| {
                     reply.embed(|embed| {
@@ -58,10 +62,10 @@ pub async fn play(
                 .await;
         }
     } else {
-        queue.push(search_query.clone());
         ctx.say(format!(
-            "{} added to queue",
-            search_query.trim().to_string()
+            "{} - {} added to queue",
+            metadata.title.unwrap(),
+            metadata.artist.unwrap()
         ))
         .await?;
     }

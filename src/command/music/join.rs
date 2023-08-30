@@ -9,11 +9,11 @@ use crate::{event::music_event::TrackEndHandler, util, Context as CustomContext,
 #[command(slash_command, ephemeral)]
 pub async fn join(ctx: CustomContext<'_>) -> Result<(), Error> {
     let guild = ctx.guild().unwrap();
-
     let (manager, channel) =
         util::manager::get_manager(&guild, ctx.author(), ctx.serenity_context())
             .await
             .unwrap();
+
     let _ = join_channel(
         manager,
         &guild,

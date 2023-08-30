@@ -1,5 +1,6 @@
 use crate::{
     command,
+    model::queue::GetQueueByGuildId,
     util::{self, music::send_music_embed},
 };
 use poise::serenity_prelude::*;
@@ -18,7 +19,12 @@ impl EventHandler for ClientHandler {
         if let Some(old) = _old {
             if check_alone(&guild, old.channel_id.unwrap(), ctx.cache.current_user_id()) {
                 let manager = util::manager::get_manager_serenity(&ctx).await;
-                command::music::leave::leave_channel(manager, guild).await;
+                command::music::leave::leave_channel(manager, guild.clone()).await;
+                let data = ctx.data.read().await;
+                let data = data.get::<crate::DataKey>().unwrap();
+                let mut queue_map = data.queue_map.get_queue_map().await;
+                let queue = queue_map.get_queue_by_id(guild.id);
+                queue.clear();
             }
         }
     }
@@ -40,7 +46,13 @@ impl SongbirdEvent for TrackEndHandler {
                 .unwrap();
             if track_list.len() == 0 {
                 command::music::leave::leave_channel(manager, self.guild.clone()).await;
+                let data = self.context.data.read().await;
+                let data = data.get::<crate::DataKey>().unwrap();
+                let mut queue_map = data.queue_map.get_queue_map().await;
+                let queue = queue_map.get_queue_by_id(self.guild.id);
+                queue.clear();
             } else {
+                //TODO add search and enqueue
                 let handler_lock = manager.get(self.guild.id).unwrap();
                 let handler = handler_lock.lock().await;
                 let queue = handler.queue();

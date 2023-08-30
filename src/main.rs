@@ -2,6 +2,8 @@ use std::env::{self, current_dir};
 use std::path::PathBuf;
 
 use crate::event::music_event::ClientHandler;
+use model::queue::QueueMap;
+use poise::serenity_prelude::TypeMapKey;
 use poise::serenity_prelude::{self as serenity, Activity};
 use poise::{Framework, FrameworkOptions};
 use songbird::SerenityInit;
@@ -9,6 +11,7 @@ use songbird::SerenityInit;
 mod command;
 mod event;
 mod extension;
+mod model;
 mod util;
 
 #[macro_use]
@@ -17,15 +20,23 @@ extern crate poise;
 extern crate log;
 
 pub struct Data {
-    queue: Vec<String>,
+    queue_map: QueueMap,
 }
 // Box because we don't know how big the error, send, sync are at compile time
 pub type Error = Box<dyn std::error::Error + Send + Sync>;
 pub type Context<'a> = poise::Context<'a, Data, Error>;
 pub type ApplicationContext<'a> = poise::ApplicationContext<'a, Data, Error>;
 
+pub struct DataKey;
+impl TypeMapKey for DataKey {
+    type Value = Data;
+}
+
 #[tokio::main]
 async fn main() {
+    let data = Data {
+        queue_map: QueueMap::new(),
+    };
     init_path().await.unwrap();
     let framework = Framework::builder()
         .options(FrameworkOptions {
@@ -37,6 +48,7 @@ async fn main() {
         .client_settings(|client_builder| {
             client_builder
                 .event_handler(ClientHandler)
+                .type_map_insert::<DataKey>(data)
                 .register_songbird()
         })
         .setup(|ctx, _ready, framework| {
@@ -54,7 +66,9 @@ async fn main() {
                     serenity::OnlineStatus::DoNotDisturb,
                 )
                 .await;
-                Ok(Data { queue: vec![] })
+                Ok(Data {
+                    queue_map: QueueMap::new(),
+                })
             })
         });
 
