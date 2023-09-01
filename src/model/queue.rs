@@ -6,7 +6,7 @@ use tokio::sync::{Mutex, MutexGuard, RwLockReadGuard};
 
 use crate::Data;
 
-// Used as type for Data inside Context
+//TODO add custom value for vec containing MetaData and bool for playing. Used as type for Data inside Context
 pub struct QueueMap(Arc<Mutex<HashMap<GuildId, Vec<Metadata>>>>);
 
 // Add constructor and get_queue_map which returns mutex containing HashMap
