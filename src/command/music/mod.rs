@@ -3,6 +3,7 @@ use crate::{Context, Error};
 pub mod join;
 pub mod leave;
 pub mod play;
+pub mod queue;
 pub mod shuffle;
 pub mod skip;
 pub mod volume;
@@ -17,7 +18,8 @@ pub mod volume;
         "play::play",
         "skip::skip",
         "shuffle::shuffle",
-        "volume::volume"
+        "volume::volume",
+        "queue::queue"
     )
 )]
 pub async fn music(_ctx: Context<'_>) -> Result<(), Error> {

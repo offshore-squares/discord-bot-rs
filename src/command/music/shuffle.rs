@@ -8,7 +8,10 @@ use rand::thread_rng;
 #[command(slash_command)]
 pub async fn shuffle(ctx: CustomContext<'_>) -> Result<(), Error> {
     let guild = ctx.guild().unwrap();
-    let mut queue_map = ctx.data().queue_map.get_queue_map().await;
+
+    let data = ctx.serenity_context().data.read().await;
+    let data = data.get::<crate::DataKey>().unwrap();
+    let mut queue_map = data.queue_map.get_queue_map().await;
     let queue = queue_map.get_queue_by_id(guild.id);
 
     if queue.len() > 2 {
