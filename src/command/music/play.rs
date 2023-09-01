@@ -1,3 +1,5 @@
+use poise::serenity_prelude::Color;
+
 use crate::{
     command,
     model::queue::{GetQueueByGuildId, Song},
@@ -76,11 +78,13 @@ pub async fn play(
         let _ = ctx
             .send(|reply| {
                 reply.embed(|e| {
-                    e.title(metadata.title.unwrap() + "added to queue")
+                    e.title(metadata.title.unwrap() + " added to queue")
                         .author(|f| {
                             f.icon_url(author.avatar_url().unwrap())
                                 .name(author.name.clone())
                         })
+                        .url(metadata.source_url.unwrap())
+                        .color(Color::from_rgb(0, 70, 128))
                         .fields(vec![("author", metadata.artist.unwrap(), true)])
                 })
             })
