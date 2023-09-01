@@ -1,6 +1,6 @@
 use crate::{
     command,
-    model::queue::GetQueueByGuildId,
+    model::queue::{GetQueueByGuildId, Song},
     util::{
         self,
         music::{search, send_music_embed},
@@ -47,10 +47,15 @@ pub async fn play(
     // Get metadata
     let metadata = input.metadata.clone();
     // if own queue is empty enqueue song
-    println!("{:#?}", queue.iter().map(|s| s.title.as_ref().unwrap()));
+    println!(
+        "{:#?}",
+        queue.iter().map(|s| s.metadata.title.as_ref().unwrap())
+    );
 
-    // TODO Should not be added when command is called for the first time
-    queue.push(*metadata.clone());
+    queue.push(Song {
+        playing: queue.len() == 0,
+        metadata: *metadata.clone(),
+    });
     if queue.len() == 1 {
         let (track, _) = songbird::create_player(input);
         {
@@ -67,12 +72,19 @@ pub async fn play(
                 .await;
         }
     } else {
-        ctx.say(format!(
-            "{} - {} added to queue",
-            metadata.title.unwrap(),
-            metadata.artist.unwrap()
-        ))
-        .await?;
+        let author = &ctx.author();
+        let _ = ctx
+            .send(|reply| {
+                reply.embed(|e| {
+                    e.title(metadata.title.unwrap() + "added to queue")
+                        .author(|f| {
+                            f.icon_url(author.avatar_url().unwrap())
+                                .name(author.name.clone())
+                        })
+                        .fields(vec![("author", metadata.artist.unwrap(), true)])
+                })
+            })
+            .await;
     }
 
     Ok(())

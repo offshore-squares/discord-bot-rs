@@ -6,12 +6,18 @@ use tokio::sync::{Mutex, MutexGuard, RwLockReadGuard};
 
 use crate::Data;
 
+#[derive(Debug, Clone)]
+pub struct Song {
+    pub playing: bool,
+    pub metadata: Metadata,
+}
+
 // Used as type for Data inside Context
-pub struct QueueMap(Arc<Mutex<HashMap<GuildId, Vec<Metadata>>>>);
+pub struct QueueMap(Arc<Mutex<HashMap<GuildId, Vec<Song>>>>);
 
 // Add constructor and get_queue_map which returns mutex containing HashMap
 impl QueueMap {
-    pub async fn get_queue_map(&self) -> MutexGuard<'_, HashMap<GuildId, Vec<Metadata>>> {
+    pub async fn get_queue_map(&self) -> MutexGuard<'_, HashMap<GuildId, Vec<Song>>> {
         self.0.lock().await
     }
 
@@ -21,12 +27,12 @@ impl QueueMap {
 }
 
 pub trait GetQueueByGuildId {
-    fn get_queue_by_id(&mut self, guild_id: GuildId) -> &mut Vec<Metadata>;
+    fn get_queue_by_id(&mut self, guild_id: GuildId) -> &mut Vec<Song>;
 }
 
 // Get queue if not exist create new hashmap
-impl GetQueueByGuildId for HashMap<GuildId, Vec<Metadata>> {
-    fn get_queue_by_id(&mut self, guild_id: GuildId) -> &mut Vec<Metadata> {
+impl GetQueueByGuildId for HashMap<GuildId, Vec<Song>> {
+    fn get_queue_by_id(&mut self, guild_id: GuildId) -> &mut Vec<Song> {
         self.entry(guild_id).or_insert(vec![])
     }
 }

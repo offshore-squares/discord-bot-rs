@@ -57,16 +57,19 @@ impl SongbirdEvent for TrackEndHandler {
             } else {
                 let handler_lock = manager.get(self.guild.id).unwrap();
                 let mut handler = handler_lock.lock().await;
-                let next_song = queue.remove(0);
+                let mut next_song = queue.remove(0);
 
-                // If Queue is bigger than 1
+                if next_song.playing {
+                    next_song = queue.get(0).unwrap().clone();
+                    next_song.playing = true;
+                }
+
                 if queue.len() >= 1 {
-                    // TODO maybe make embed now looks derpy
                     // Get song from source
                     let input = search(format!(
                         "{} - {}",
-                        next_song.title.as_ref().unwrap(),
-                        next_song.artist.as_ref().unwrap()
+                        next_song.metadata.title.as_ref().unwrap(),
+                        next_song.metadata.artist.as_ref().unwrap()
                     ))
                     .await
                     .unwrap();
