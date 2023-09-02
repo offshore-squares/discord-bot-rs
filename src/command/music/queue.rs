@@ -64,7 +64,22 @@ pub async fn queue(ctx: Context<'_>) -> Result<(), Error> {
                     f.kind(poise::serenity_prelude::InteractionResponseType::UpdateMessage)
                         .interaction_response_data(|f| {
                             f.embed(|f| {
-                                f.title(format!("Music Queue - Page {}", page + 1))
+                                f.title(format!("Page: {}", page + 1,))
+                                    .footer(|f| {
+                                        f.text(format!(
+                                            "total duration: {}",
+                                            format_duration(
+                                                queue
+                                                    .iter()
+                                                    .map(|song| song
+                                                        .metadata
+                                                        .duration
+                                                        .unwrap()
+                                                        .as_secs())
+                                                    .sum(),
+                                            ),
+                                        ))
+                                    })
                                     .color(Color::from_rgb(120, 60, 22))
                                     .description(
                                         queue
@@ -125,7 +140,18 @@ fn create_embed(
         builder
             .embed(|embed| {
                 embed
-                    .title(format!("Music Queue - Page {}", page + 1))
+                    .title(format!("Page: {}", page + 1))
+                    .footer(|f| {
+                        f.text(format!(
+                            "total duration: {}",
+                            format_duration(
+                                queue
+                                    .iter()
+                                    .map(|song| song.metadata.duration.unwrap().as_secs())
+                                    .sum(),
+                            ),
+                        ))
+                    })
                     .color(Color::from_rgb(120, 60, 22))
                     .description(
                         queue
