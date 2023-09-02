@@ -48,11 +48,6 @@ pub async fn play(
     let input = search(search_query).await.unwrap();
     // Get metadata
     let metadata = input.metadata.clone();
-    // if own queue is empty enqueue song
-    println!(
-        "{:#?}",
-        queue.iter().map(|s| s.metadata.title.as_ref().unwrap())
-    );
 
     queue.push(Song {
         playing: queue.len() == 0,
