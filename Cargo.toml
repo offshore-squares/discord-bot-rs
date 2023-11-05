@@ -13,7 +13,7 @@ log = "0.4"
 log4rs = { version = "1", features = ["gzip"] }
 migration = { path = "migration" }
 poise = "0.5"
-sea-orm = { version = "0.11", features = [
+sea-orm = { version = "0.12.0-rc.4", features = [
     "debug-print",
     "macros",
     "runtime-tokio-rustls",
@@ -30,6 +30,6 @@ actix-rt = "2.7"
 actix-service = "2"
 regex = "1"
 lazy_static = "1"
-songbird = { version = "0.3.0", features = ["yt-dlp", "builtin-queue"] }
+songbird = { version = "0.3.2", features = ["yt-dlp", "builtin-queue"] }
 audiopus_sys = "0.2.2"
 rand = "0.8.5"

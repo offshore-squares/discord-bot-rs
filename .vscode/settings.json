@@ -1,4 +1,5 @@
 {
     "crates.listPreReleases": true,
     "stylelint.enable": false,
+    "nuxt.isNuxtApp": false,
 }
