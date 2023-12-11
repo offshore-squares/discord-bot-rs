@@ -1,7 +1,7 @@
 # discord-bot-rs
 
 Rust discord bot
-You need to install ffmpeg and put it into lib dir :)
+You need to install ffmpeg and put it into lib dir
 
 ## To-do
 
